@@ -4,6 +4,7 @@ import Tmdb from './Tmdb'
 
 import FeaturedMovie from './components/FeaturedMovie'
 import Header from './components/Header'
+import MovieRow from './components/MovieRow'
 
 export default () => {
   const [blackHeader, setblackHeader] = useState(false)
@@ -14,12 +15,14 @@ export default () => {
     const loadAll = async () => {
       let list = await Tmdb.getHomeList()
       setMovieList (list)
+       
+      
 
       let originals = list.filter(i => i.slug === 'originals')
       let randomChosen = Math.floor(Math.random() * (originals[0].items.results.length - 1))
       let chosen = originals[0].items.results[randomChosen]
       let choseInfo = await Tmdb.getMovieInfo(chosen.id, 'tv')
-      console.log (choseInfo)
+     
       setFeaturedData(choseInfo)
     }
     loadAll()
@@ -52,6 +55,10 @@ export default () => {
 
     }
     <div className='Lists'>
+      {movieList.map((item, key)=> 
+        <MovieRow key={key} title={item.title} items= {item.items} />
+      )}
+
 
     </div>
       <footer>
@@ -59,6 +66,13 @@ export default () => {
         Direitos De Imagem para NetFlix <br />
         Dados pego do Site Themoviedb.org
       </footer>
+
+      {movieList.length <= 0 &&
+        <div className="loading">
+          <img src="https://media.wired.com/photos/592744d3f3e2356fd800bf00/master/w_2560%2Cc_limit/Netflix_LoadTime.gif" alt="Carregando"/>
+        </div>
+      } 
+
     </div>
 
   )
